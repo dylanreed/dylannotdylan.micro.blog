@@ -24,6 +24,47 @@
 	
 	  <div class="h-entry">
 		
+			<h1><a href="https://dylan.blog/2025/12/29/i-used-s-terminal-art.html">I Used 1980s Terminal Art to Design a Video Game</a></h1>
+		
+
+		<a href="https://dylan.blog/2025/12/29/i-used-s-terminal-art.html" class="u-url"><time class="dt-published" datetime="2025-12-29 11:02:39 -0700">Dec 29, 2025</time></a>
+
+		<div class="e-content">
+			 <p>^^Finished product first^^</p>
+<p>I&rsquo;m building a point-and-click adventure game called Rio Borealis - a sci-fi western detective mystery set on Mars. And because I apparently have a deep need to make everything slightly more complicated than necessary, I wrote a Python script that turns my room layouts into ANSI-colored terminal art.</p>
+<p>Here&rsquo;s what a room layout looks like in the code:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">grid <span style="color:#f92672">=</span> [
+    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
+    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
+    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
+    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
+    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
+    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;table&#39;</span>,<span style="color:#e6db74">&#39;table&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
+    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;door&#39;</span>,<span style="color:#e6db74">&#39;door&#39;</span>],
+    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
+]
+</code></pre></div><p><img src="https://dylan.blog/uploads/2025/madam-zhus.png" alt="ANSI map mockup of a brothel room"></p>
+<p>The magic is in a 50-line function called <code>get_direction()</code>. For each tile, it checks all 8 neighbors and asks: are you the same terrain as me?</p>
+<p>If all 8 neighbors match, you&rsquo;re a middle tile: <code>▓</code></p>
+<p>If three sides match but not the top, you&rsquo;re a north edge: <code>↑</code></p>
+<p>If you&rsquo;re surrounded by the same terrain but a diagonal neighbor is different, you&rsquo;re an inner corner: <code>◤</code></p>
+<p>And if you&rsquo;re near two or more different terrain types, you&rsquo;re a transition point: <code>◆</code></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">ARROWS <span style="color:#f92672">=</span> {
+    <span style="color:#e6db74">&#39;N&#39;</span>: <span style="color:#e6db74">&#39;↑&#39;</span>, <span style="color:#e6db74">&#39;S&#39;</span>: <span style="color:#e6db74">&#39;↓&#39;</span>, <span style="color:#e6db74">&#39;E&#39;</span>: <span style="color:#e6db74">&#39;→&#39;</span>, <span style="color:#e6db74">&#39;W&#39;</span>: <span style="color:#e6db74">&#39;←&#39;</span>,
+    <span style="color:#e6db74">&#39;NW&#39;</span>: <span style="color:#e6db74">&#39;↖&#39;</span>, <span style="color:#e6db74">&#39;NE&#39;</span>: <span style="color:#e6db74">&#39;↗&#39;</span>, <span style="color:#e6db74">&#39;SW&#39;</span>: <span style="color:#e6db74">&#39;↙&#39;</span>, <span style="color:#e6db74">&#39;SE&#39;</span>: <span style="color:#e6db74">&#39;↘&#39;</span>,
+    <span style="color:#e6db74">&#39;nw&#39;</span>: <span style="color:#e6db74">&#39;◤&#39;</span>, <span style="color:#e6db74">&#39;ne&#39;</span>: <span style="color:#e6db74">&#39;◥&#39;</span>, <span style="color:#e6db74">&#39;sw&#39;</span>: <span style="color:#e6db74">&#39;◣&#39;</span>, <span style="color:#e6db74">&#39;se&#39;</span>: <span style="color:#e6db74">&#39;◢&#39;</span>,
+    <span style="color:#e6db74">&#39;M&#39;</span>: <span style="color:#e6db74">&#39;▓&#39;</span>, <span style="color:#e6db74">&#39;$&#39;</span>: <span style="color:#e6db74">&#39;◆&#39;</span>
+}
+</code></pre></div><p>Each terrain type gets its own hex color converted to ANSI escape codes. Wood floors are brown. Red carpet is&hellip; red. Hazard zones are orange. When you <code>cat</code> the <code>.ans</code> file in your terminal, you get a little color-coded map showing exactly where every tile edge should go.</p>
+<p>I&rsquo;ve now got 23 locations visualized this way - from Lucy&rsquo;s Saloon to the mine crater floor. It&rsquo;s not how most people design game levels, but it means I can see exactly what my tile transitions need to look like before I generate a single pixel of art.</p>
+<p>Sometimes the best tools are the ones from 1985.</p>
+<!-- raw HTML omitted -->
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
 			<h1><a href="https://dylan.blog/2025/12/28/when-customer-service-is-your.html">When Customer Service Is Your Best Healthcare Option</a></h1>
 		
 
