@@ -24,13 +24,108 @@
 	
 	  <div class="h-entry">
 		
+			<h1><a href="https://dylan.blog/2025/12/31/save-early-save-often-how.html">SAVE EARLY, SAVE OFTEN: How I Turned My Blog Into a Sierra Game (And All the Ways It Went Wrong First)</a></h1>
+		
+
+		<a href="https://dylan.blog/2025/12/31/save-early-save-often-how.html" class="u-url"><time class="dt-published" datetime="2025-12-31 11:13:26 -0700">Dec 31, 2025</time></a>
+
+		<div class="e-content">
+			 <p>I grew up on Sierra games. King&rsquo;s Quest, Space Quest, Quest for Glory—if it had &ldquo;Quest&rdquo; in the title and VGA graphics, I was there. Those games taught me that peak visual design was achieved sometime around 1992 and everything since has been a lateral move at best.</p>
+<p>So when I decided to redesign my blog, naturally I thought: what if my website looked like a point-and-click adventure game? What if my cat Ramona wandered across the screen? What if there were multiple themes and weather effects and a Konami code easter egg?</p>
+<p>What could possibly go wrong?</p>
+<p><img src="https://cdn.uploads.micro.blog/191463/2025/d4982dfd6a.gif" alt="Diver Cat walking across the screen"> ## The Diver Incident</p>
+<p>Here&rsquo;s the thing about having ADHD and access to AI art tools: every idea feels like the best idea until it isn&rsquo;t.</p>
+<p>I started this project with a diver sprite. A little 96x96 pixel diver who would swim across the page. Made sense at the time—I went to commercial diving school, I have a connection to the ocean, it&rsquo;s thematic.</p>
+<p>Except it wasn&rsquo;t. It was weird. Why is there a diver on a fantasy cottage blog about my hobbies and medical adventures? I scaled him down to 48x48. Still weird. I tried different animations.</p>
+<p>Then I looked at Ramona sleeping on my desk and thought: oh. It should just be my cat.</p>
+<p>Forty-seven sprite animations later, Ramona now walks, runs, jumps, yawns, sleeps, cleans her face, and wakes up—all in 8 directions. The diver files still exist in the repo like a reminder of my hubris.</p>
+<p><img src="https://cdn.uploads.micro.blog/191463/2025/8b524a937d.gif" alt="Frank walking across the screen"> ## The 336-File Reorganization Commit</p>
+<p>When you&rsquo;re building something with <a href="https://claude.ai/claude-code">Claude Code</a> and <a href="https://pixellab.ai">Pixellab</a>, the assets accumulate fast. Really fast. At some point I had files everywhere—sprites mixed with headers, fantasy assets next to cyberpunk ones, and a naming convention that could charitably be described as &ldquo;vibes-based.&rdquo;</p>
+<p>The commit message for the fix was just: &ldquo;Reorganize all assets into theme folders.&rdquo;</p>
+<p>336 files. One commit. The git diff was a nightmare.</p>
+<p>But now everything lives in tidy folders: <code>/fantasy/</code>, <code>/sci-fi/</code>, <code>/cyberpunk/</code>, <code>/cabin/</code>, <code>/underwater/</code>. Each with their own headers, sprites, backgrounds. It&rsquo;s beautiful. It only took me three days of chaos to get there.
+<img src="https://cdn.uploads.micro.blog/191463/2025/594450c1e8.gif" alt="Jeff walking across the screen"></p>
+<h2 id="the-png-problem">The PNG Problem</h2>
+<p>You know what&rsquo;s heavy? PNG files. You know what I had? Hundreds of them.</p>
+<p>The cyberpunk theme alone was 60+ megabytes before I figured out WebP conversion. The fantasy theme was worse. I was essentially asking visitors to download a small video game before they could read my posts about ankle surgery.</p>
+<p>The fix was simple: convert everything to WebP. The result was dramatic—cyberpunk dropped to 12MB, the whole theme package became manageable. The lesson was the same one I keep learning: the obvious solution is usually the right one, I just have to fail my way to it first.
+<img src="https://cdn.uploads.micro.blog/191463/2025/64dda96ed1.gif" alt="Alien Cat walking across the screen"></p>
+<h2 id="168-lines-of-css-attribute-selectors">168 Lines of CSS Attribute Selectors</h2>
+<p>Here&rsquo;s where it gets fun. I have 5 themes. Each theme has custom category header images. There are ~34 categories. Do the math.</p>
+<p>The theme switcher doesn&rsquo;t use JavaScript to swap images—that felt too heavy. Instead, I wrote CSS that looks for the header image in the style attribute and overrides it per theme:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-css" data-lang="css"><span style="color:#f92672">html</span>.<span style="color:#a6e22e">theme-cyberpunk</span> .<span style="color:#a6e22e">header-image</span><span style="color:#f92672">[</span><span style="color:#f92672">style</span><span style="color:#f92672">*=</span><span style="color:#e6db74">&#34;health.webp&#34;</span><span style="color:#f92672">]</span> {
+  <span style="color:#66d9ef">background-image</span>: url(<span style="color:#e6db74">&#34;/cyberpunk/headers/health.webp&#34;</span>) <span style="color:#75715e">!important</span>;
+}
+
+<span style="color:#f92672">html</span>.<span style="color:#a6e22e">theme-cyberpunk</span> .<span style="color:#a6e22e">header-image</span><span style="color:#f92672">[</span><span style="color:#f92672">style</span><span style="color:#f92672">*=</span><span style="color:#e6db74">&#34;tech.webp&#34;</span><span style="color:#f92672">]</span> {
+  <span style="color:#66d9ef">background-image</span>: url(<span style="color:#e6db74">&#34;/cyberpunk/headers/tech.webp&#34;</span>) <span style="color:#75715e">!important</span>;
+}
+
+<span style="color:#75715e">/* ...repeat 166 more times */</span>
+</code></pre></div><p>Is this elegant? No. Does it work without any JavaScript overhead? Yes. Am I proud of it? Also yes, in a chaotic goblin kind of way.
+<img src="https://cdn.uploads.micro.blog/191463/2025/9e0eddc98f.gif" alt="Ramona walking across the screen"></p>
+<h2 id="the-note-scroll-saga">The Note Scroll Saga</h2>
+<p>I wanted notes (my short posts) to look like little scrolls. Seemed simple: a scroll top, a repeating middle section, and a scroll bottom.</p>
+<p>Four iterations later, I had learned:</p>
+<ul>
+<li>Scrolls need to work in both day AND night mode</li>
+<li>Mobile rendering is different than desktop</li>
+<li>&ldquo;Disappeared behind&rdquo; is not a valid display state</li>
+<li>Session storage and local storage are different things and I should know which one I&rsquo;m using</li>
+</ul>
+<p>The scroll system now works beautifully. It only took&hellip; let me check the git log&hellip; seven commits to get there.
+<img src="https://cdn.uploads.micro.blog/191463/2025/7ab64501b0.gif" alt="Cyberpunk Cat walking across the screen"></p>
+<h2 id="what-actually-worked">What Actually Worked</h2>
+<p>Not everything was a disaster. Some things came together like magic:</p>
+<p><strong>The Sierra Control Panel</strong> - A little dropdown menu at the top that lets you toggle day/night, weather effects, themes, and chaos mode. It feels exactly like clicking on the menu bar in an old Mac game.</p>
+<p><strong>Ramona&rsquo;s AI</strong> - She wanders the page on her own, occasionally sitting down to yawn or clean her face. When you scroll, she follows. On mobile, she hides because she knows small screens need the space.</p>
+<p><strong>The Achievement System</strong> - 25+ unlockable achievements for exploring the site. Find the Konami code? Achievement. Click the theme button 25 times? You unlock chaos mode AND get an achievement.</p>
+<p><strong>Chaos Mode Itself</strong> - After enough engagement, the site goes full chaos goblin: floating pixel sprites, particle effects, screen shake, CRT scanlines. It&rsquo;s ridiculous. I love it.
+<img src="https://cdn.uploads.micro.blog/191463/2025/762d177710.gif" alt="Frank walking across the screen"></p>
+<h2 id="the-tools-that-made-this-possible">The Tools That Made This Possible</h2>
+<p>I built this entire thing with <a href="https://claude.ai/claude-code">Claude Code</a> as my coding partner. Every late-night debugging session, every &ldquo;why doesn&rsquo;t this CSS work&rdquo; moment, every time I needed to refactor 336 files—Claude was there, probably judging my variable naming choices.</p>
+<p>The pixel art sprites came from <a href="https://pixellab.ai">Pixellab</a>, which let me generate Ramona in all her 8-directional glory without having to learn actual pixel art (though honestly, I might now—it&rsquo;s kind of addictive).
+<img src="https://cdn.uploads.micro.blog/191463/2025/e09450df35.gif" alt="Ramona walking across the screen"></p>
+<h2 id="the-lesson-if-there-is-one">The Lesson (If There Is One)</h2>
+<p>I&rsquo;m not sure this project taught me anything I didn&rsquo;t already know. I&rsquo;m going to start projects without a clear plan. I&rsquo;m going to make weird decisions that I have to undo later. I&rsquo;m going to write 168 lines of CSS attribute selectors because it seems like a good idea at 2am.</p>
+<p>But I&rsquo;m also going to end up with a blog that looks like a 1992 Sierra game, with my actual cat walking across the screen, and weather effects, and a chaos mode that rewards people for sticking around.</p>
+<p>VGA graphics really were peak.</p>
+<p>Stay pixelated, friends.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
+			<h1><a href="https://dylan.blog/2025/12/30/one-pan-to-rule-them.html">One Pan To Rule Them All, And In My Stomach Bind Them</a></h1>
+		
+
+		<a href="https://dylan.blog/2025/12/30/one-pan-to-rule-them.html" class="u-url"><time class="dt-published" datetime="2025-12-30 07:55:02 -0700">Dec 30, 2025</time></a>
+
+		<div class="e-content">
+			 <p><img src="https://cdn.uploads.micro.blog/191463/2025/glowing-fried-rice.png" alt="One Pan To Rule Them All"></p>
+<p>There&rsquo;s a moment in cooking where you stop checking the recipe and just&hellip; know. Sunday night, standing over a pan of high-protein crispy garlic chicken fried rice, I had that moment.</p>
+<p>Sarah found the recipe - a <a href="https://sandrarecipe.com/high-protein-crispy-garlic-chicken-fried-rice/">high protein version from Sandra&rsquo;s Recipe</a> that promised crispy chicken and all the good stuff. She handled the mise en place, which if you&rsquo;re not familiar is the fancy French term for &ldquo;everything chopped and ready so you don&rsquo;t panic when the garlic starts burning.&rdquo;</p>
+<p>The secret, as it turns out, is day-old rice. Not fresh, steamy, clumpy rice. Rice that&rsquo;s been sitting in the fridge getting firm and slightly resentful. That&rsquo;s the rice you want.</p>
+<p>I seared the chicken until it was actually golden and crispy - not the &ldquo;close enough&rdquo; golden I usually settle for. Built the aromatics. Scrambled the eggs separately like a person who reads instructions. Let the rice hit that hot pan and listened to it sizzle and crisp.</p>
+<p>And then it all came together.</p>
+<p>Not in the &ldquo;well, it&rsquo;s edible&rdquo; way. In the &ldquo;this tastes like restaurant food&rdquo; way. The chicken was crispy. The rice had that slight char. The garlic was everywhere it should be. Sarah and I sat down and just&hellip; ate it. No notes. No &ldquo;next time I&rsquo;d do X differently.&rdquo; Just quiet satisfaction.</p>
+<p>I&rsquo;ve been cooking long enough to know that these moments aren&rsquo;t guaranteed. Sometimes the rice clumps. Sometimes the chicken overcooks while you&rsquo;re scrambling eggs. Sometimes you forget an entire ingredient until you&rsquo;re washing dishes.</p>
+<p>But Sunday night, the rice was right.</p>
+<p>Stay full, friends.</p>
+
+		</div>
+	  </div>
+	
+	  <div class="h-entry">
+		
 			<h1><a href="https://dylan.blog/2025/12/29/i-used-s-terminal-art.html">I Used 1980s Terminal Art to Design a Video Game</a></h1>
 		
 
 		<a href="https://dylan.blog/2025/12/29/i-used-s-terminal-art.html" class="u-url"><time class="dt-published" datetime="2025-12-29 11:02:39 -0700">Dec 29, 2025</time></a>
 
 		<div class="e-content">
-			 <p>^^Finished product first^^</p>
+			 <p><img src="https://dylan.blog/uploads/2025/old-tech-new-things.png" alt="Old tech new things"></p>
 <p>I&rsquo;m building a point-and-click adventure game called Rio Borealis - a sci-fi western detective mystery set on Mars. And because I apparently have a deep need to make everything slightly more complicated than necessary, I wrote a Python script that turns my room layouts into ANSI-colored terminal art.</p>
 <p>Here&rsquo;s what a room layout looks like in the code:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">grid <span style="color:#f92672">=</span> [
@@ -40,10 +135,11 @@
     [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;bed&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
     [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
     [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;table&#39;</span>,<span style="color:#e6db74">&#39;table&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
-    [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;door&#39;</span>,<span style="color:#e6db74">&#39;door&#39;</span>],
+   [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;carpet&#39;</span>,<span style="color:#e6db74">&#39;door&#39;</span>,<span style="color:#e6db74">&#39;door&#39;</span>],
     [<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>,<span style="color:#e6db74">&#39;wall&#39;</span>],
 ]
-</code></pre></div><p><img src="https://dylan.blog/uploads/2025/madam-zhus.png" alt="ANSI map mockup of a brothel room"></p>
+</code></pre></div><p>Here&rsquo;s what the output looks like:
+<img src="https://dylan.blog/uploads/2025/madam-zhus.png" alt="ANSI map mockup of a brothel room"></p>
 <p>The magic is in a 50-line function called <code>get_direction()</code>. For each tile, it checks all 8 neighbors and asks: are you the same terrain as me?</p>
 <p>If all 8 neighbors match, you&rsquo;re a middle tile: <code>▓</code></p>
 <p>If three sides match but not the top, you&rsquo;re a north edge: <code>↑</code></p>
@@ -58,7 +154,6 @@
 </code></pre></div><p>Each terrain type gets its own hex color converted to ANSI escape codes. Wood floors are brown. Red carpet is&hellip; red. Hazard zones are orange. When you <code>cat</code> the <code>.ans</code> file in your terminal, you get a little color-coded map showing exactly where every tile edge should go.</p>
 <p>I&rsquo;ve now got 23 locations visualized this way - from Lucy&rsquo;s Saloon to the mine crater floor. It&rsquo;s not how most people design game levels, but it means I can see exactly what my tile transitions need to look like before I generate a single pixel of art.</p>
 <p>Sometimes the best tools are the ones from 1985.</p>
-<!-- raw HTML omitted -->
 
 		</div>
 	  </div>
@@ -14624,9 +14719,9 @@ wordpress_url: <a href="http://dylanreed.org/?p=20">http://dylanreed.org/?p=20</
 
     
     
-  <script src="https://cdn.jsdelivr.net/npm/hls.js?v=207"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js?v=229"></script>
 
-  <script src="/js/studio.js?v=207"></script>
+  <script src="/js/studio.js?v=229"></script>
 
 
 
